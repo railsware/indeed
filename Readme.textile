@@ -1,1 +1,18 @@
 h1. Indeed integration plugin
+
+Simple integration plugin for Indeed.com XML feed api
+
+
+h3. Requirements
+
+The following gems are required:
+
+* yajl-ruby
+* rake
+
+h3. Example
+
+<pre><code>require 'indeed'
+Indeed.key = &lt;publisher key&gt;
+Indeed.get(:q => "ruby", :l => "Boston")
+</code></pre>
