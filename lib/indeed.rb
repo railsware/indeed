@@ -31,8 +31,10 @@ class Indeed
       location << nil
     end
     result = []
+    options = default_params.merge(options)
+    options[:limit] = options[:limit] / location.size
     location.each do |item|
-      params = default_params.merge(options).merge(:l => item, :limit => default_params[:limit] / location.size )
+      params = options.merge(:l => item)
       log("Indeed query", params.inspect)
       response = Yajl::Parser.parse(http_get(
         URL.host,
