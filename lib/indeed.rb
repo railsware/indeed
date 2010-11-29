@@ -7,14 +7,15 @@ require "yajl"
 
 class Indeed
 
-  URL = URI.parse("http://api.indeed.com/ads/apisearch")
+  SEARCH_URL = URI.parse("http://api.indeed.com/ads/apisearch")
+  GET_URL = URI.parse("http://api.indeed.com/ads/apigetjobs")
 
   def self.instance
     @instance ||= Indeed.new
   end
 
-  def self.get(options)
-    self.instance.get(options)
+  def self.search(options)
+    self.instance.search(options)
   end
 
   def self.key=(key)
@@ -25,7 +26,11 @@ class Indeed
     self.instance.default_params
   end
 
-  def get(options)
+  def self.get(job_keys)
+    self.instance.get(job_keys)
+  end
+
+  def search(options)
     location = Array(options.delete(:l))
     if location.empty?
       location << nil
@@ -35,18 +40,25 @@ class Indeed
     options[:limit] = options[:limit] / location.size
     location.each do |item|
       params = options.merge(:l => item)
-      log("Indeed query", params.inspect)
-      response = Yajl::Parser.parse(http_get(
-        URL.host,
-        URL.path,
+      result <<  http_get(
+        SEARCH_URL.host,
+        SEARCH_URL.path,
         params
-      ))
-      if error = response["error"]
-        raise IndeedError, error
-      end
-      result << response["results"]
+      )
     end
     result.flatten
+  end
+
+  def get(jobkeys)
+    jobkeys = Array(jobkeys)
+    response = http_get(
+      GET_URL.host,
+      GET_URL.path,
+      :jobkeys => jobkeys,
+      :v => 2,
+      :publisher => default_params[:publisher],
+      :format => "json"
+    )
   end
 
   def default_params
@@ -70,9 +82,14 @@ class Indeed
 
   protected
   def http_get(domain, path, params = {})
+    log("Indeed query", params.inspect)
     query = "#{path}?#{params.collect { |k,v| "#{k}=#{CGI::escape(v.to_s)}" }.join('&')}"
-      #raise query
-      return Net::HTTP.get(domain, query)
+
+      result = Yajl::Parser.parse(Net::HTTP.get(domain, query))
+    if error = result["error"]
+      raise IndeedError, error
+    end
+    return result["results"]
   end
 
 

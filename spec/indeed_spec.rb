@@ -42,9 +42,17 @@ describe Indeed do
   end
 
 
-  describe ".get" do
-    subject { Indeed.get(:q => "Java", :l => "Boston") }
+  describe ".search" do
+    subject { Indeed.search(:q => "Java", :l => "Boston") }
+    
+    it { should be_a(Array) }
 
+    it {should_not be_empty }
+  end
+
+  describe ".get" do
+    subject { Indeed.get(123) }
+    it { should be_a(Array) }
     it {should_not be_empty }
   end
 end
