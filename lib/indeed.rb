@@ -31,27 +31,13 @@ class Indeed
   end
 
   def search(options)
-    location = Array(options.delete(:l))
-    if location.empty?
-      location << nil
-    end
-    result = []
     options = default_params.merge(options)
-    options[:limit] = options[:limit] / location.size
-    location.each do |item|
-      params = options.merge(:l => item)
-      result <<  http_get(
-        SEARCH_URL.host,
-        SEARCH_URL.path,
-        params
-      )
-    end
-    result.flatten
+    http_get(SEARCH_URL.host, SEARCH_URL.path, options)
   end
 
   def get(jobkeys)
     jobkeys = Array(jobkeys)
-    response = http_get(
+    http_get(
       GET_URL.host,
       GET_URL.path,
       :jobkeys => jobkeys,
@@ -85,11 +71,13 @@ class Indeed
     log("Indeed query", params.inspect)
     query = "#{path}?#{params.collect { |k,v| "#{k}=#{CGI::escape(v.to_s)}" }.join('&')}"
 
-      result = Yajl::Parser.parse(Net::HTTP.get(domain, query))
-    if error = result["error"]
+      data = Yajl::Parser.parse(Net::HTTP.get(domain, query))
+    if error = data["error"]
       raise IndeedError, error
     end
-    return result["results"]
+    result = IndeedResult.new(data["results"], data["totalResults"])
+
+    return result
   end
 
 
@@ -110,6 +98,16 @@ class Indeed
     end
   end
 
+end
+
+class IndeedResult < Array
+
+  attr_accessor :total
+
+  def initialize(array, total)
+    super(array)
+    self.total = total
+  end
 end
 
 class IndeedError < StandardError

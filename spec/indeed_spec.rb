@@ -48,6 +48,9 @@ describe Indeed do
     it { should be_a(Array) }
 
     it {should_not be_empty }
+    it "should get total number of results from indeed" do 
+      subject.total.should == 822
+    end
   end
 
   describe ".get" do
