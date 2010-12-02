@@ -26,8 +26,8 @@ class Indeed
     self.instance.default_params
   end
 
-  def self.get(job_keys)
-    self.instance.get(job_keys)
+  def self.get(*job_keys)
+    self.instance.get(*job_keys)
   end
 
   def search(options)
