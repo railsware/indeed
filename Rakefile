@@ -18,7 +18,6 @@ Support search jobs API 2.0 and get jobs API
   gemspec.email = "agresso@gmail.com"
   gemspec.homepage = "http://github.com/railsware/indeed"
   gemspec.authors = ["Bogdan Gusiev"]
-  gemspec.add_dependency "yajl-ruby"
 end
 
 Spec::Rake::SpecTask.new(:spec) do |spec|
