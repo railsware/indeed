@@ -7,14 +7,15 @@ require "yajl"
 
 class Indeed
 
-  URL = URI.parse("http://api.indeed.com/ads/apisearch")
+  SEARCH_URL = URI.parse("http://api.indeed.com/ads/apisearch")
+  GET_URL = URI.parse("http://api.indeed.com/ads/apigetjobs")
 
   def self.instance
     @instance ||= Indeed.new
   end
 
-  def self.get(options)
-    self.instance.get(options)
+  def self.search(options)
+    self.instance.search(options)
   end
 
   def self.key=(key)
@@ -25,26 +26,25 @@ class Indeed
     self.instance.default_params
   end
 
-  def get(options)
-    location = Array(options.delete(:l))
-    if location.empty?
-      location << nil
-    end
-    result = []
-    location.each do |item|
-      params = default_params.merge(options).merge(:l => item, :limit => default_params[:limit] / location.size )
-      log("Indeed query", params.inspect)
-      response = Yajl::Parser.parse(http_get(
-        URL.host,
-        URL.path,
-        params
-      ))
-      if error = response["error"]
-        raise IndeedError, error
-      end
-      result << response["results"]
-    end
-    result.flatten
+  def self.get(*job_keys)
+    self.instance.get(*job_keys)
+  end
+
+  def search(options)
+    options = default_params.merge(options)
+    http_get(SEARCH_URL.host, SEARCH_URL.path, options)
+  end
+
+  def get(jobkeys)
+    jobkeys = Array(jobkeys)
+    http_get(
+      GET_URL.host,
+      GET_URL.path,
+      :jobkeys => jobkeys,
+      :v => 2,
+      :publisher => default_params[:publisher],
+      :format => "json"
+    )
   end
 
   def default_params
@@ -68,9 +68,16 @@ class Indeed
 
   protected
   def http_get(domain, path, params = {})
+    log("Indeed query", params.inspect)
     query = "#{path}?#{params.collect { |k,v| "#{k}=#{CGI::escape(v.to_s)}" }.join('&')}"
-      #raise query
-      return Net::HTTP.get(domain, query)
+
+      data = Yajl::Parser.parse(Net::HTTP.get(domain, query))
+    if error = data["error"]
+      raise IndeedError, error
+    end
+    result = IndeedResult.new(data["results"], data["totalResults"])
+
+    return result
   end
 
 
@@ -91,6 +98,16 @@ class Indeed
     end
   end
 
+end
+
+class IndeedResult < Array
+
+  attr_accessor :total
+
+  def initialize(array, total)
+    super(array)
+    self.total = total
+  end
 end
 
 class IndeedError < StandardError

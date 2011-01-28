@@ -14,5 +14,6 @@ h3. Example
 
 <pre><code>require 'indeed'
 Indeed.key = &lt;publisher key&gt;
-Indeed.get(:q => "ruby", :l => "Boston")
+Indeed.search(:q => "ruby", :l => "Boston")
+Indeed.get('f8abbe5539f14420', '4fb26405a44d7eb8')
 </code></pre>
