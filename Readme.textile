@@ -1,6 +1,7 @@
 h1. Indeed integration plugin
 
 Simple integration plugin for Indeed.com XML feed api
+https://ads.indeed.com/jobroll/xmlfeed (Require authorization)
 
 
 h3. Requirements
@@ -10,10 +11,15 @@ The following gems are required:
 * yajl-ruby
 * rake
 
+h3. Installation
+
+<pre><code>gem install indeed</code></pre>
+
 h3. Example
 
 <pre><code>require 'indeed'
 Indeed.key = &lt;publisher key&gt;
-Indeed.search(:q => "ruby", :l => "Boston")
+result = Indeed.search(:q => "ruby", :l => "Boston")
+result.total #indeed returns number of results
 Indeed.get('f8abbe5539f14420', '4fb26405a44d7eb8')
 </code></pre>
