@@ -88,7 +88,7 @@ class Indeed
   end
 
   def format_log_entry(message, dump = nil)
-    if defined?(Rails::LogSubscriber) && Rails::LogSubscriber.colorize_logging
+    if defined?(Rails) && Rails.configuration.respond_to?(:colorize_logging) && Rails.configuration.colorize_logging
       message_color, dump_color = "4;32;1", "0;1"
       log_entry = "  \e[#{message_color}m#{message}\e[0m   "
       log_entry << "\e[#{dump_color}m%#{String === dump ? 's' : 'p'}\e[0m" % dump if dump
