@@ -70,8 +70,12 @@ class Indeed
   def http_get(domain, path, params = {})
     log("Indeed query", params.inspect)
     query = "#{path}?#{params.collect { |k,v| "#{k}=#{CGI::escape(v.to_s)}" }.join('&')}"
-
+    begin
       data = Yajl::Parser.parse(Net::HTTP.get(domain, query))
+    rescue Yajl::ParseError
+      raise IndeedError, 'Did not get a valid JSON response from Indeed'
+    end
+
     if error = data["error"]
       raise IndeedError, error
     end
