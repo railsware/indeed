@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{indeed}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bogdan Gusiev"]
-  s.date = %q{2011-06-21}
+  s.date = %q{2011-09-09}
   s.description = %q{Simple wrapper for JSON api provided by indeed.
 Original documentation at:
 http://www.indeed.com/jsp/apiinfo.jsp (Require authorization)
@@ -29,7 +29,7 @@ Support search jobs API 2.0 and get jobs API
   ]
   s.homepage = %q{http://github.com/railsware/indeed}
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.6.2}
   s.summary = %q{Api wrap from Indeed service http://indeed.com}
   s.test_files = [
     "spec/indeed_spec.rb",
@@ -37,7 +37,6 @@ Support search jobs API 2.0 and get jobs API
   ]
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
