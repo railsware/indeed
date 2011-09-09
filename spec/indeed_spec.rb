@@ -58,4 +58,20 @@ describe Indeed do
     it { should be_a(Array) }
     it {should_not be_empty }
   end
+
+  context "when Indeed returns html instead of json" do
+    before(:each) do
+      
+      Net::HTTP.stubs(:get).returns(<<-HTML)
+    <h1>Internal Error</h1>
+HTML
+    end
+
+    it "should raise exception" do
+      lambda {
+        Indeed.search({})
+      }.should raise_error(IndeedError)
+    end
+    
+  end
 end
