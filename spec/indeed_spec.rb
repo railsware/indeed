@@ -44,12 +44,12 @@ describe Indeed do
 
   describe ".search" do
     subject { Indeed.search(:q => "Java", :l => "Boston") }
-    
+
     it { should be_a(Array) }
 
     it {should_not be_empty }
-    it "should get total number of results from indeed" do 
-      subject.total.should == 822
+    it "should get total number of results from indeed" do
+      subject.totalResults.should == 822
     end
   end
 
@@ -61,7 +61,7 @@ describe Indeed do
 
   context "when Indeed returns html instead of json" do
     before(:each) do
-      
+
       Net::HTTP.stubs(:get).returns(<<-HTML)
     <h1>Internal Error</h1>
 HTML
@@ -72,6 +72,6 @@ HTML
         Indeed.search({})
       }.should raise_error(IndeedError)
     end
-    
+
   end
 end
