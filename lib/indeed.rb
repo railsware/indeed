@@ -106,11 +106,11 @@ end
 
 class IndeedResult < Array
 
-  attr_accessor :total
+  attr_accessor :totalResults
 
   def initialize(array, total)
     super(array)
-    self.total = total
+    self.totalResults = total
   end
 end
 
