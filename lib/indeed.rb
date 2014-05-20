@@ -27,7 +27,7 @@ class Indeed
   end
 
   def self.get(*job_keys)
-    self.instance.get(*job_keys)
+    self.instance.get(job_keys)
   end
 
   def search(options)
@@ -40,7 +40,7 @@ class Indeed
     http_get(
       GET_URL.host,
       GET_URL.path,
-      :jobkeys => jobkeys,
+      :jobkeys => jobkeys.join(','),
       :v => 2,
       :publisher => default_params[:publisher],
       :format => "json"
