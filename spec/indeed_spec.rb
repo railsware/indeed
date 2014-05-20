@@ -54,7 +54,7 @@ describe Indeed do
   end
 
   describe ".get" do
-    subject { Indeed.get(123) }
+    subject { Indeed.get('f8abbe5539f14420', '4fb26405a44d7eb8') }
     it { should be_a(Array) }
     it {should_not be_empty }
   end
